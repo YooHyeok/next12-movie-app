@@ -18,14 +18,11 @@ export default function NavBar() {
       <a className={[styles.link, router.pathname==="/about" ? styles.active : ""].join(" ")}>about</a>
     </Link> */}
     <style jsx>{`
-        nav {
-          background-color: tomato;
-        }
         a{
           text-decoration: none;
         }
         .active {
-          color: yellow;
+          color: tomato;
         }
     `}</style>
   </nav>
