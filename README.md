@@ -311,4 +311,39 @@ Server에서 동작하므로 API Key를적어도 client에 노출되지 않을�
 라우트에 의해 클라이언트 컴포넌트를 읽어들이지만, 해당 컴포넌트가 렌더링되기 전 Server에서 해당 컴포넌트의 서버에서 작동하는 getServerSideProps()를 호출하고 custom app인 _app.js에서 이윽고 랜더링이 된다.
 custom app의 pageProps로 getServerSideProps()에서 반환한 객체를 받고, Component Props를 렌더링하며 해당 Props를 함께 props로 넘겨준다.
 
-이때 getServerSiderProps가 async되어있기 때문에 해당 작업이 종료되기 전까지 클라이언트 컴포넌트의 렌더링이 대기상태가 된다.
+이때 getServerSiderProps가 종료되기 전까지 클라이언트 컴포넌트의 렌더링이 대기상태가 된다.
+
+# Dynamic Routes
+
+ - ### nested Route
+    우선 js 파일이 url이 된다.    
+    만약 최상단인 pages에 example.js가 있다면 /example이 된다.    
+    이때 기본적으로 index.js는 해당 디렉토리 경로의 메인이 된다.    
+    만약 폴더가 존재한다면 해당 폴더가 url로 인식된다.    
+
+    예를들어 pages/moive 디렉토리 경로에 example.js 파일이 존재한다고 가정한다.   
+    pages/movie/example 이라는 url요청이 들어오면 위 디렉토리경로의 example.js 컴포넌트로 라우팅된다.   
+
+    다른예로 pages/movie 디렉토리 경로에 index.js와 examplejs 그리고 pages 디렉토리 경로에 movie.js가 있다고 가정하자.    
+    pages/movie 라는 요청 url이 들어오면 pages 디렉토리의 movie.js는 무시되면서 pages/movie 디렉토리의 index.js가 라우팅되며 서버에서 중복 경고가 뜬다.
+
+
+ - ### URL Variable
+      ```js
+      import { useRouter } from "next/router"
+
+      export default function Detail() {
+        const {query:{id}} = useRouter();
+        console.log(id)
+        return "asdasdasdasd";
+      }
+      ```
+    - basic route   
+      **[id].js** 파일에서 useRouter의 query로 부터 파라미터를 받는다.
+
+    - nested route    
+      **[id]/index.js** 파일    
+      즉, [id] 라는 디렉토리 하위의 index.js 파일인 중첩 라우트방식이다.
+      만약 [id] 디렉토리 하위에 새로운 nested route가 존재한다면 이 방식을 써야한다.
+      
+      
