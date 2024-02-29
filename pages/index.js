@@ -13,7 +13,6 @@ export default function Home({results}) {
   useEffect(()=> {
     getMovies()
   }, []) */
-  console.log(results)
   return (
     <div className="container">
       <Seo title="Home" />
@@ -54,7 +53,6 @@ export async function getServerSideProps() {
     const response = await fetch("http://localhost:3000/api/movies")
     const {results} = await response.json();
     // const {results} = await (await fetch("https://localhost:3000/api/movies")).json()
-    console.log(results)
     return {
       props: {
         results,
