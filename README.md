@@ -147,7 +147,7 @@ return <script jsx>{`
 ```
 위와 같이 gloabl이라는 props를 부여하한다.
 
-# Custom App
+# *Custom App*
  서버가 실행될때 특정 작업을 수행하는 Middleware와 유사한 매커니즘이다.   
  라우터에 의해 컴포넌트 교체가 발생할 때 App 컴포넌트에서 해당 페이지를 초기화한다.   
  따라서 Custom App컴포넌트에서 헤더, 푸터, 네비바 등에 해당하는 공통 레이아웃 혹은 전역 CSS등을 설정한다.
@@ -175,3 +175,92 @@ export default function App({Component, pageProps}) {
 ```
 ***global.css*** *는 _app.js인 App 컴포넌트외에는 import 할 수 없다.*
 *(해당 예외 발생시 에러 출력됨)*
+
+
+# *Layout Pattern*
+Custom App은 보통 너무 큰 용량의 작업을 추천하지 않는다.    
+많은 Global import대상들과, Google Analytics라던지, 검색엔진 노출에 관한 무언가 혹은 스크립트 분석등    
+따라서 Layout으로 처리해야할 공통 컴포넌트들은 Custom App이 아닌 따로 분리해서 처리하는것이 좋다.   
+*(NextJS 에서 따로 지원하는 컴포넌트는 아니므로 파일명, 함수명에 제약을 받지는 않음)*
+ 
+
+```js
+import Layout from "../components/Layout";
+import "../styles/globals.css"
+
+export default function App({Component, pageProps}) {
+  return <>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </>
+}
+```
+
+```js
+import NavBar from "./NavBar";
+
+export default function Layout({children}) {
+  return <>
+    <NavBar/>
+    <div>{children}</div>
+  </>
+}
+```
+  - ### `children` Props
+    React.js로부터 제공받는 children Props는 하나의 컴포넌트를 또 다른 컴포넌트 안에 넣을 때 사용할 수 있다.    
+    (위 코드에서는 Custom App의 `<Comopnent/>` 즉, 라우트된 컴포넌트를 전달받는다.)
+
+# *Redirect & Rewrite / 환경 변수*
+  NextJS에서는 `next.config.js` 파일에서 특정 URL경로로 요청이 오면 새로운 경로로 reidrect 혹은 API rewrites 즉, proxy 설정이 가능하다.
+
+ - ### redirect()
+
+    `next.config.js`
+    ```js
+    const nextConfig = {
+      reactStrictMode: true,
+      swcMinify: true,
+      async redirects() {
+        return [
+          {
+            source: "/naver", /* 사용자의 이동 경로 */
+            destination: 'https://www.naver.com', /* redirect될 경로 */
+            permanent: false, /* redirection이 영구적인지 여부에 따라 브라우저 검색엔진 정보기억 여부결정 */
+          },
+          {
+            source: "/old-blog/:path*", /* 예전 블로그 */
+            destination: '/new-blog/:path*', /* 블로그 이전 주소 */
+            permanent: false,
+          }
+        ]
+      }
+    }
+    module.exports = nextConfig
+    ```
+ - ### rewrites() & 환경변수
+
+    - `.env`
+    ```properties
+    API_KEY = c47cc6330adde4989a314ca9866c5c4a
+    ```
+
+    - `next.config.js`
+    ```js
+    const API_KEY = process.env.API_KEY
+
+    const nextConfig = {
+      reactStrictMode: true,
+      swcMinify: true,
+      async rewrites() {
+        return [
+          {
+            source: "/api/movies",
+            destination: `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`
+          },
+        ]
+      }
+    }
+
+    module.exports = nextConfig
+    ```
