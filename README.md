@@ -61,7 +61,7 @@ Link태그 하위에 anchor태그를 중첩으로 넣어 className 혹은 style 
 ```
 위와같이 적용하면 anchor태그에 href className이 같이 적용된다.
 
-# *Route - useRoute*
+# *Route - useRouter*
 현재 컴포넌트 기준 location 정보를 제공해주는 Next 훅이다.
 
 # *.module.css 여러 클래스 적용*
@@ -265,7 +265,7 @@ export default function Layout({children}) {
     module.exports = nextConfig
     ```
 
-# Server Side Render - getServerSideProps()
+# *Server Side Render - getServerSideProps()*
 클라이언트가 아닌 서버 사이드에서 데이터를 조회하여, custom App의 pageProps로 반환한다.   
 예를들어 homp 화면이라면 index.js 파일을 라우트한다.    
 해당 파일내에는 client 컴포넌트가 구현되어있다.   
@@ -313,7 +313,7 @@ custom app의 pageProps로 getServerSideProps()에서 반환한 객체를 받고
 
 이때 getServerSiderProps가 종료되기 전까지 클라이언트 컴포넌트의 렌더링이 대기상태가 된다.
 
-# Dynamic Routes
+# *Dynamic Routes*
 
  - ### nested Route
     우선 js 파일이 url이 된다.    
@@ -335,7 +335,7 @@ custom app의 pageProps로 getServerSideProps()에서 반환한 객체를 받고
       export default function Detail() {
         const {query:{id}} = useRouter();
         console.log(id)
-        return "asdasdasdasd";
+        return id;
       }
       ```
     - basic route   
@@ -347,3 +347,71 @@ custom app의 pageProps로 getServerSideProps()에서 반환한 객체를 받고
       만약 [id] 디렉토리 하위에 새로운 nested route가 존재한다면 이 방식을 써야한다.
       
       
+# *Query String & URL Masking*
+일반적으로 Link의 href를 통해 라우트 및 파라미터를 전달할 수 있다.
+하지만 그 방법 대신 함수호출을 통해 url을 라우트할 수 있다.
+바로 push 함수이다.
+
+```js
+  const router = useRouter();
+  router.push(`/movies/123`)
+```
+
+동적라우팅에 필요한 파라미터 뿐만아니라 ?을 사용하는 query string형태의 파라미터 전달도 가능하다.
+
+```js
+const router = useRouter();
+
+router.push({
+      pathname : `/movies/${id}`,
+      query: {
+        title // /movies/:id?title=[data]
+      }
+    })
+```
+위와 같이 객체 형태로 route url을 설정할 수 있는데, 이곳에 query string 형태의 파라미터를 전달할 수 있다.
+객체에는 라우팅될 url을 pathname 속성으로 지정해주고, query sting 형태로 전달할 파라미터를 query라는 속성을 통해 객체로 선언한다.
+
+이는 Link태그에도 동일하게 적용이 가능하다.
+```js
+return <Link  
+  href={{
+          pathname : `/movies/${movie.id}`,
+          query: {
+            title: movie.original_title
+          }
+        }}>
+```
+
+## as: Link URL Masking
+일반적으로 Link에서 라우팅할때 as라는 이름의 props에 url을 입력하여 사용자에게 보여지는 URL을 마스킹(대체)할 수 있다
+```js
+return (
+  <Link  
+    href={{
+            pathname : `/movies/${movie.id}`,
+            query: {
+              title: movie.original_title 
+            },
+          }} 
+    as={`/movies/${movie.id}`}>
+    )
+```
+이렇게 되면 파라미터는 정상적으로 라우팅된 컴포넌트에서 useRouter를 통해 추출이 가능하지만, URL 상에서는 query string이 보여지지 않는다.
+
+## as: userRouter.push()
+useRouter의 push함수를 통해 라우팅 할때는 as에 해당하는 마스킹 URL을 두번째 매개변수로 담아주면 된다.
+
+```js
+const router = useRouter();
+router.push({
+      pathname : `/movies/${id}`,
+      query: {
+        title // /movies/:id?title=[data]
+      },
+    },
+    `/movies/${id}` /* Link의 as 지정한 url로 마스킹한다. (출력되는 query를 숨길수 있다.) */
+    )
+```
+
+
