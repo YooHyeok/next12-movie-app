@@ -264,3 +264,51 @@ export default function Layout({children}) {
 
     module.exports = nextConfig
     ```
+
+# Server Side Render - getServerSideProps()
+클라이언트가 아닌 서버 사이드에서 데이터를 조회하여, custom App의 pageProps로 반환한다.   
+예를들어 homp 화면이라면 index.js 파일을 라우트한다.    
+해당 파일내에는 client 컴포넌트가 구현되어있다.   
+
+그 아래에 getServerSideProps() 라는 메소드를 통해 Server에서 동작하는 함수를 선언한다.    
+nextJS 프레임워크가 해당 함수를 호출할 수 있도록 export를 선언해 줘야하며, 동기 처리 되도록 async로 선언한다.
+Server에서 동작하므로 API Key를적어도 client에 노출되지 않을것이다.
+- **컴포넌트**
+  ```js
+  export default function Home({results}) {
+
+    return (
+      <div className="container">
+        {JSON.parse(results)}
+      </div>
+    )
+  }
+
+  export async function getServerSideProps() {
+      const response = await fetch("http://localhost:3000/api/movies")
+      const {results} = await response.json();
+      // const {results} = await (await fetch("https://localhost:3000/api/movies")).json()
+      return {
+        props: {
+          results,
+        },
+      }
+  }
+  ```
+
+- **_app.js**
+  ```js
+  export default function App({Component, pageProps}) {
+    return <>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </>
+  }
+  ```
+`getServerSideProps()` 에 의해 반환된 오브젝트는 custom App의 props중 pageProps로 전달된다.
+
+라우트에 의해 클라이언트 컴포넌트를 읽어들이지만, 해당 컴포넌트가 렌더링되기 전 Server에서 해당 컴포넌트의 서버에서 작동하는 getServerSideProps()를 호출하고 custom app인 _app.js에서 이윽고 랜더링이 된다.
+custom app의 pageProps로 getServerSideProps()에서 반환한 객체를 받고, Component Props를 렌더링하며 해당 Props를 함께 props로 넘겨준다.
+
+이때 getServerSiderProps가 async되어있기 때문에 해당 작업이 종료되기 전까지 클라이언트 컴포넌트의 렌더링이 대기상태가 된다.
