@@ -16,9 +16,18 @@ export default function Home({results}) {
     getMovies()
   }, []) */
 
+
   const router = useRouter();
-  const onImageClick = (id) => {
-    router.push(`/movies/${id}`)
+  const onImageClick = (id, title) => {
+    // router.push(`/movies/${id}`)
+    router.push({
+      pathname : `/movies/${id}`,
+      query: {
+        title // /movies/:id?title=[data]
+      },
+    },
+    `/movies/${id}` /* Link의 as 지정한 url로 마스킹한다. (출력되는 query를 숨길수 있다.) */
+    )
   }
 
   return (
@@ -28,8 +37,15 @@ export default function Home({results}) {
       {movies?.map((movie) => ( */}
       {results?.map((movie)=> (
         <div className="movie" key={movie.id}>
-          <img onClick={() => onImageClick(movie.id)} src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} />
-          <Link  href={`/movies/${movie.id}`}>
+          <img onClick={() => onImageClick(movie.id, movie.original_title)} src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} />
+          <Link  
+            href={{
+                    pathname : `/movies/${movie.id}`,
+                    query: {
+                      title: movie.original_title // /movies/:id?title=[data]
+                    },
+                  }} 
+            as={`/movies/${movie.id}`}>
             <h4>{movie.original_title}</h4>
           </Link>
         </div>
