@@ -211,6 +211,46 @@ export default function Layout({children}) {
     React.js로부터 제공받는 children Props는 하나의 컴포넌트를 또 다른 컴포넌트 안에 넣을 때 사용할 수 있다.    
     (위 코드에서는 Custom App의 `<Comopnent/>` 즉, 라우트된 컴포넌트를 전달받는다.)
 
+# MetaData - next/head
+
+페이지의 head부분에 들어갈 정보이다.
+주로 title, meta description등에 해당한다.
+Create React App 에서는 react-helmet의 Helmet 컴포넌트를 이용했다.
+페이지나 레이아웃에서만 메타데이터를 내보낼수 있고, 컴포넌트에서는 내보낼 수 없다.
+
+```js
+import Head from "next/head";
+
+export default function MetaEx() {
+return <Head>
+  <title>Title! | example~ </title>
+</Head>
+}
+```
+위와같이 next/head의 Head 태그를 사용하여 적용이 가능하다.
+
+```js
+import Head from "next/head";
+
+export default function Seo({title}) {
+  return <Head>
+  <title>{title} | Next Movies</title>
+</Head>
+}
+```
+```js
+import {Seo} from "./Seo";
+
+export default function MetaEx() {
+return <Seo title={"title"} />
+}
+```
+
+위 코드는 Seo라는 컴포넌트를 거쳐 동적으로 medata를 관리할 수 있게 만든 예제코드이다.
+
+<br>
+
+
 # *Redirect & Rewrite / 환경 변수*
   NextJS에서는 `next.config.js` 파일에서 특정 URL경로로 요청이 오면 새로운 경로로 reidrect 혹은 API rewrites 즉, proxy 설정이 가능하다.
 
