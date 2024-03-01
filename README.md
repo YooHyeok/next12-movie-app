@@ -32,7 +32,7 @@ pages 폴더에 생성한 js 컴포넌트 파일의 파일명이 곧 URL이 된�
 NextJS에서는 위 두가지 특성으로 사용자(브라우저)가 Javascript코드를 로딩한 뒤 React가 실행되기를 기다리지 않아도 된다.    
 
 ## *`static Pre Rendering`*
-브라우저에서 Javascript 코드를 로드하기 전에 미리 JSX를 먼저 읽어들여 랜더링부터 해 준다
+브라우저에서 Javascript 코드를 로드하기 전에 백엔드에서 미리 JSX를 먼저 읽어들여 랜더링부터 해 준다
 
 ## *`Hydration`*
 만약 컴포넌트에서 React의 Interactive한 기능을 사용한다면 (useState, useEffect 등)    
@@ -327,6 +327,8 @@ custom app의 pageProps로 getServerSideProps()에서 반환한 객체를 받고
     다른예로 pages/movie 디렉토리 경로에 index.js와 examplejs 그리고 pages 디렉토리 경로에 movie.js가 있다고 가정하자.    
     pages/movie 라는 요청 url이 들어오면 pages 디렉토리의 movie.js는 무시되면서 pages/movie 디렉토리의 index.js가 라우팅되며 서버에서 중복 경고가 뜬다.
 
+    id가 아닌 params 혹은 원하는 단어로 넣으면 파라미터 키값이 변경된다.   
+    ex) [id] → [p] = p라는 이름으로 파라미터값이 넘어간다.
 
  - ### URL Variable
       ```js
@@ -399,7 +401,7 @@ return (
 ```
 이렇게 되면 파라미터는 정상적으로 라우팅된 컴포넌트에서 useRouter를 통해 추출이 가능하지만, URL 상에서는 query string이 보여지지 않는다.
 
-## as: userRouter.push()
+## as: useRouter.push()
 useRouter의 push함수를 통해 라우팅 할때는 as에 해당하는 마스킹 URL을 두번째 매개변수로 담아주면 된다.
 
 ```js
@@ -413,5 +415,55 @@ router.push({
     `/movies/${id}` /* Link의 as 지정한 url로 마스킹한다. (출력되는 query를 숨길수 있다.) */
     )
 ```
+
+# *catch all & Context parameter*
+
+ - ## catch all
+    동적 라우팅시 파라미터를 배열형태로 받을 수 있다.
+    [파라미터명] 으로 파일 혹은 디렉토리를 생성할 때, ...파라미터명 으로 적용한 뒤 URL에 파라미터를     
+    `/data/data/data` 형식으로 요청을 할 경우 JS의 전개식과 같이
+    가변적인 복수개의 데이터로 인식하여 Array형태로 파라미터를 받는다.
+  
+ - ## Context parameter
+    해당 컴포넌트로 라우팅 될 경우 서버에서 getServerSideProps()의 매개변수 Props를 통해 Dynamic route의 Url varialble 즉, 파라미터를 전달받을 수 있다.
+    <br>
+    
+    - **useRouter() 사용 코드 (파라미터 클라이언트 처리 )**
+
+      ```js
+        import { useRouter } from "next/router"
+        import Seo from "../../components/Seo"
+
+        export default function Detail() {
+        /*   const router = useRouter();
+          const [title, id] = router.query.params || []; */
+          const {query:{params:[title, id] = []}} = useRouter(); // 대부분의 컴포넌트가 Server에서 prerender 되기 때문에 useRouter에 대한 js코드가 아직 로드되지 않을때 기본배열로 설정해줘야한다.
+          console.log(title)
+          console.log(id)
+          return <div>
+            <h4>{title id}</h4>
+          </div>
+        }
+      ```
+      <br>
+    - **getServerSideProps() Context 사용 코드 (파라미터 서버 처리 )**
+
+      ```js
+        import Seo from "../../components/Seo"
+
+        export default function Detail({params:[title, id]=[]}) {
+          console.log(title)
+          console.log(id)
+          return <div>
+            <h4>{title id}</h4>
+          </div>
+        }
+
+        export function getServerSideProps({params:{params}}) {
+          return {
+            props : {params}
+          }
+        }
+      ```
 
 
