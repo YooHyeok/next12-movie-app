@@ -467,3 +467,6 @@ router.push({
       ```
 
 
+# *404 Not Found Routes (404.js)*
+찾을 수 없는 파일은 URL경로 세그먼트 내에서 NextJS가 내부적으로 UI를 렌더링 할 때 사용된다.     
+즉, 해당 URL 경로에 `index.js` 혹은 `[url].js`가 존재하지 않는다면 NextJS가 `404.js` 컴포넌트 파일을 찾아 렌더링한다.     
