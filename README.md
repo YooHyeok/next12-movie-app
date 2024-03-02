@@ -16,8 +16,8 @@
 <br>
 
 # *Page Router*
-NextJS 프레임워크에서 지원하는 파일시스템 기반 라우팅 방식이다.
-pages 폴더에 생성한 js 컴포넌트 파일의 파일명이 곧 URL이 된다.
+NextJS 프레임워크에서 지원하는 파일시스템 기반 라우팅 방식이다.   
+pages 폴더에 생성한 js 컴포넌트 파일의 파일명이 곧 URL이 된다.    
 (컴포넌트 이름은 URL에 영향을 주지 않는다.)
 
 <br>
@@ -25,9 +25,9 @@ pages 폴더에 생성한 js 컴포넌트 파일의 파일명이 곧 URL이 된�
 # *static Pre Render & Hydration*
 
 일반적인 React Application은 Client에서 컴포넌트를 Rendering한다.   
-만약 인터넷 속도가 느리다면? 
+만약 인터넷 속도가 느리다면?    
 브라우저가 React코드가 들어있는 Javascript를 로딩하기 전까지 화면에 아무것도 출력되지 않을것이다.   
-또한 데이터를 Fetch가 완료되기 전까지, 해당 데이터를 구성하는 JSX를 렌더링 하지 못한다.
+또한 데이터를 Fetch가 완료되기 전까지, 해당 데이터를 구성하는 JSX를 렌더링 하지 못한다.   
 
 NextJS에서는 위 두가지 특성으로 사용자(브라우저)가 Javascript코드를 로딩한 뒤 React가 실행되기를 기다리지 않아도 된다.    
 
@@ -78,7 +78,7 @@ Link태그 하위에 anchor태그를 중첩으로 넣어 className 혹은 style 
 
 # Style JSX
  
-module.css와 같이 랜덤한 문자열 결합으로 이루어져있어 클래스명 중복에 대한 문제를 해결 해주며, 컴포넌트 내 독립적으로 적용된다.
+module.css와 같이 랜덤한 문자열 결합으로 이루어져있어 클래스명 중복에 대한 문제를 해결 해주며, 컴포넌트 내 독립적으로 적용된다.   
 부모 컴포넌트가 동일한 클래스명을 사용한다고 하더라도, 자식 컴포넌트의 클래스이름과 동일하지 않기 때문에 적용되지 않는다.
 
 ```js
@@ -154,8 +154,8 @@ return <script jsx>{`
 
  _app.js 라는 이름으로 파일을 생성해줘야하며, pages 디렉토리에 존재해야한다.
 
-App 컴포넌트에는 2개의 Props가 존재한다.
-하나는 Route된 Component와 다른 하나는 page
+App 컴포넌트에는 2개의 Props가 존재한다.    
+하나는 Route된 Component와 다른 하나는 pageProps이다.
 
  ```js
  import NavBar from "../components/NavBar";
@@ -173,11 +173,11 @@ export default function App({Component, pageProps}) {
     </>
 }
 ```
-***global.css*** *는 _app.js인 App 컴포넌트외에는 import 할 수 없다.*
+***global.css*** *는 _app.js인 App 컴포넌트외에는 import 할 수 없다.*   
 *(해당 예외 발생시 에러 출력됨)*
 
 
-# *Layout Pattern*
+## *Layout Pattern*
 Custom App은 보통 너무 큰 용량의 작업을 추천하지 않는다.    
 많은 Global import대상들과, Google Analytics라던지, 검색엔진 노출에 관한 무언가 혹은 스크립트 분석등    
 따라서 Layout으로 처리해야할 공통 컴포넌트들은 Custom App이 아닌 따로 분리해서 처리하는것이 좋다.   
@@ -213,9 +213,9 @@ export default function Layout({children}) {
 
 # MetaData - next/head
 
-페이지의 head부분에 들어갈 정보이다.
-주로 title, meta description등에 해당한다.
-Create React App 에서는 react-helmet의 Helmet 컴포넌트를 이용했다.
+페이지의 head부분에 들어갈 정보이다.    
+주로 title, meta description등에 해당한다.    
+Create React App 에서는 react-helmet의 Helmet 컴포넌트를 이용했다.    
 페이지나 레이아웃에서만 메타데이터를 내보낼수 있고, 컴포넌트에서는 내보낼 수 없다.
 
 ```js
@@ -348,7 +348,7 @@ Server에서 동작하므로 API Key를적어도 client에 노출되지 않을�
   ```
 `getServerSideProps()` 에 의해 반환된 오브젝트는 custom App의 props중 pageProps로 전달된다.
 
-라우트에 의해 클라이언트 컴포넌트를 읽어들이지만, 해당 컴포넌트가 렌더링되기 전 Server에서 해당 컴포넌트의 서버에서 작동하는 getServerSideProps()를 호출하고 custom app인 _app.js에서 이윽고 랜더링이 된다.
+라우트에 의해 클라이언트 컴포넌트를 읽어들이지만, 해당 컴포넌트가 렌더링되기 전 Server에서 해당 컴포넌트의 서버에서 작동하는 getServerSideProps()를 호출하고 custom app인 _app.js에서 이윽고 랜더링이 된다.   
 custom app의 pageProps로 getServerSideProps()에서 반환한 객체를 받고, Component Props를 렌더링하며 해당 Props를 함께 props로 넘겨준다.
 
 이때 getServerSiderProps가 종료되기 전까지 클라이언트 컴포넌트의 렌더링이 대기상태가 된다.
@@ -384,8 +384,7 @@ custom app의 pageProps로 getServerSideProps()에서 반환한 객체를 받고
       **[id].js** 파일에서 useRouter의 query로 부터 파라미터를 받는다.
 
     - nested route    
-      **[id]/index.js** 파일    
-      즉, [id] 라는 디렉토리 하위의 index.js 파일인 중첩 라우트방식이다.
+      **[id]/index.js** 파일 즉, [id] 라는 디렉토리 하위의 index.js 파일인 중첩 라우트방식이다.   
       만약 [id] 디렉토리 하위에 새로운 nested route가 존재한다면 이 방식을 써야한다.
       
       
@@ -411,8 +410,8 @@ router.push({
       }
     })
 ```
-위와 같이 객체 형태로 route url을 설정할 수 있는데, 이곳에 query string 형태의 파라미터를 전달할 수 있다.
-객체에는 라우팅될 url을 pathname 속성으로 지정해주고, query sting 형태로 전달할 파라미터를 query라는 속성을 통해 객체로 선언한다.
+위와 같이 객체 형태로 route url을 설정할 수 있는데, 이곳에 query string 형태의 파라미터를 전달할 수 있다.   
+객체에는 라우팅될 url을 pathname 속성으로 지정해주고, query sting 형태로 전달할 파라미터를 query라는 속성을 통해 객체로 선언한다.   
 
 이는 Link태그에도 동일하게 적용이 가능하다.
 ```js
@@ -459,10 +458,9 @@ router.push({
 # *catch all & Context parameter*
 
  - ## catch all
-    동적 라우팅시 파라미터를 배열형태로 받을 수 있다.
-    [파라미터명] 으로 파일 혹은 디렉토리를 생성할 때, ...파라미터명 으로 적용한 뒤 URL에 파라미터를     
-    `/data/data/data` 형식으로 요청을 할 경우 JS의 전개식과 같이
-    가변적인 복수개의 데이터로 인식하여 Array형태로 파라미터를 받는다.
+    동적 라우팅시 파라미터를 배열형태로 받을 수 있다.   
+    [파라미터명] 으로 파일 혹은 디렉토리를 생성할 때, [...파라미터명] 으로 적용한 뒤 URL에 파라미터를 
+    `/data/data/data` 형식으로 요청을 할 경우 JS의 전개식과 같이 가변적인 복수개의 데이터로 인식하여 Array형태로 파라미터를 받는다.
   
  - ## Context parameter
     해당 컴포넌트로 라우팅 될 경우 서버에서 getServerSideProps()의 매개변수 Props를 통해 Dynamic route의 Url varialble 즉, 파라미터를 전달받을 수 있다.
